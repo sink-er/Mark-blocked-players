@@ -1,0 +1,28 @@
+# MBPId profile button configuration
+# Copy this file to <game>/FSD/Binaries/Win64/ue4ss/Mods/MBPId/data/profile_button.txt
+# Changes take effect after restarting the game (no rebuild required).
+#
+# action = what happens when the button is clicked
+#   overlay = open the game's own Steam profile overlay (default)
+#   browser = open the Steam Community profile in the system browser
+#   both    = open both
+action=overlay
+#
+# placement = where the button is placed
+#   bottomleft = centered under the character portrait, on the bottom row (default)
+#   infobox    = vertical column below the health/ammo info
+#   ranks      = vertical column at the right end of the name/class row
+#   canvas     = directly below the name row
+placement=bottomleft
+#
+# Position fine-tuning in Slate design units (resolution/DPI independent).
+# Positive offset_x moves right, positive offset_y moves down.
+offset_x=20
+offset_y=5
+#
+# Appearance. The defaults match the game's own Respawn/Mute/Profile buttons:
+# FontSize=12, Width(minimum)=50, Height=20.
+# width=0 lets the button size itself from its localized text.
+font=12
+width=50
+height=20

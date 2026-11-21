@@ -1,0 +1,43 @@
+# Build trees (keep all build products outside the source tree)
+/build/
+/out/
+/cmake-build-*/
+/CMakeFiles/
+/CMakeCache.txt
+/CMakeUserPresets.json
+/*.sln
+/*.vcxproj
+/*.vcxproj.*
+/RE-UE4SS/
+
+# Compiled binaries / symbols
+*.dll
+*.pdb
+*.lib
+*.exp
+*.obj
+*.ilk
+*.ipdb
+*.iobj
+
+# Runtime data and local diagnostics (may contain Steam IDs / player names)
+/data/*.txt
+!/data/profile_button.example.txt
+*.log
+
+# Local backups and snapshots
+/backup/
+*.bak
+*.bak-*
+
+# IDE / editor files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store
