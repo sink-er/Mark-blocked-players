@@ -233,6 +233,51 @@ Language=...
 
 ---
 
+## 已知不兼容：better-server-list-filters
+
+**与 [Better Server-List Filters](https://mod.io/g/drg/m/better-server-list-filters)（mod.io mod id `4825074`）同时启用时，服务器列表的 `[已屏蔽玩家]` 标签不可用。**
+
+### 现象
+
+开启 better-server-list-filters 后：
+
+- 服务器列表**任何情况下都不显示** `[已屏蔽玩家]` 标签（初次打开、刷新、点击任何排序都不行）。
+- 房内红名、ESC 玩家列表「主页」按钮**不受影响**，仍然正常。
+- 卸载 better-server-list-filters 后，标签功能立即恢复正常。
+
+**结论：这两个 mod 不能同时使用。** 需要 `[已屏蔽玩家]` 标签时请二选一。
+
+### 已确认的原因
+
+better-server-list-filters 是一个**重新编译过的蓝图 mod**（`.pak`），它**重写了整个服务器列表行控件蓝图** `ITM_ServerList_Entry`。把它的资产与游戏原版逐字段对比，可确认：
+
+| 项目 | 游戏原版 | 装了 better-server-list-filters |
+|---|---|---|
+| 行控件内 WidgetTree 数量 | 1 | **2** |
+| 蓝图代码里按属性名寻址 `TXT_Region` | 3 处 | **0 处** |
+
+也就是说，在它的版本里 `TXT_Region` 这个控件虽然还存在，但**蓝图已经完全不再使用它来显示地区文本**——显示逻辑被改写到了别处。本 mod 依赖往 `TXT_Region` 插入/追加内容，因此在它的版本下写进去的文本不会被任何代码渲染出来。
+
+这不是本 mod 的配置问题，也无法通过修改本 mod 绕过：**标签的载体已经被对方的资产替换掉了**。同理，任何"往行控件里塞自己的控件/改写行控件文本"的 mod 都会与它冲突；作者本人在 mod.io 页面上也写过：
+
+> Expect incompatability with other mods that apply custom behaviour to the server-list.
+
+### 诊断依据（供后续维护者参考）
+
+排查过程中的可复现证据（日志位于 `<game>\FSD\Binaries\Win64\ue4ss\UE4SS.log`）：
+
+1. 屏蔽名单、房主 SteamID 解析、扫描全部正常：
+   `rows=132 hostIds=119 blocked=1 tagged=1`
+2. 文本写入并且**回读校验通过**，说明写入路径本身没问题：
+   `region apply: setText=true match=true readback='[CN] [已屏蔽玩家]'`
+3. `rows.txt` 里该行确实记录着完整正确的文本：
+   `眼虫  [CN] [已屏蔽玩家]  76561199875883481  BLOCKED  ...`
+4. 但界面上始终不出现——因为该 `TXT_Region` 已不在对方的显示路径上。
+
+`rows.txt` 的每行末尾有一列 `VISIBLE`/`hidden`，可用于确认某行是否被认为可见。
+
+---
+
 ## 故障排查
 
 | 现象                    | 检查                                                                                |
