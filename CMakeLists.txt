@@ -20,8 +20,17 @@ if(NOT TARGET UE4SS)
     add_subdirectory("${UE4SS_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/RE-UE4SS")
 endif()
 
+# 按功能模块拆分：dllmain 只做装配 + 游戏线程调度，各模块自带 .hpp/.cpp。
 add_library(${TARGET} SHARED
     src/dllmain.cpp
+    src/common.cpp
+    src/blocklist.cpp
+    src/ui_strings.cpp
+    src/players.cpp
+    src/names.cpp
+    src/server_list.cpp
+    src/card_panel.cpp
+    src/profile_legacy.cpp
 )
 
 target_compile_features(${TARGET} PRIVATE cxx_std_23)
