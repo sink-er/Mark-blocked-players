@@ -30,9 +30,13 @@ Deep Rock Galactic 的本地 UI 增强 mod：在服务器列表标记你已屏�
 
 ![房内被屏蔽玩家的名字显示为红色](示例2.webp)
 
+### 空间站选人：被屏蔽队友红名
+
+![空间站选人界面里被屏蔽玩家的名字显示为红色](示例3.webp)
+
 ### ESC 玩家列表：主页按钮
 
-![ESC 玩家列表卡片上的主页按钮](示例3.webp)
+![ESC 玩家列表卡片上的主页按钮](示例4.webp)
 
 ---
 
@@ -74,10 +78,24 @@ RE-UE4SS 使用 CMake `FetchContent` 拉取部分第三方依赖，首次配置�
 ├─ RE-UE4SS/          # git clone --recursive
 └─ MBPId/             # 本仓库
    ├─ CMakeLists.txt
-   ├─ src/dllmain.cpp
+   ├─ src/            # 按功能模块拆分，见下表
    ├─ data/profile_button.example.txt
    └─ docs/TRANSLATIONS.md
 ```
+
+源码按功能模块组织，每个模块一对 `.hpp`/`.cpp`：
+
+| 模块 | 职责 |
+|---|---|
+| `src/dllmain.cpp` | 只做装配 + 游戏线程调度（`start_mod` / 三段定时器） |
+| `src/common` | 路径推导、字符串转换、UObject 安全读取、UMG 反射小工具 |
+| `src/blocklist` | Steam 屏蔽名单：实时枚举 + `ignored.txt` 兜底 + 2 秒节流 |
+| `src/ui_strings` | 读 `GameUserSettings.ini`，17 种语言文案（见 `docs/TRANSLATIONS.md`） |
+| `src/players` | `PlayerState` → `data/players.txt`，玩家名反查 SteamID64 |
+| `src/names` | 房内被屏蔽玩家红名（三处名字控件）→ `data/names.txt` |
+| `src/server_list` | 服务器列表 `[已屏蔽玩家]` 标签 → `data/rows.txt` |
+| `src/card_panel` | ESC 玩家列表「主页」按钮（事件驱动，现行实现） |
+| `src/profile_legacy` | 同一按钮的旧轮询实现，**不参与调度**，保留供对照/回滚 |
 
 把本仓库和 `RE-UE4SS` 放在同一级目录即可。也可以在配置时通过 `UE4SS_SOURCE_DIR` 指向任意位置的 RE-UE4SS。
 
